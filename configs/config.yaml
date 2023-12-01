@@ -1,0 +1,42 @@
+#run related
+config_name: "config.yaml"
+final_dir_name: "output_dir"
+debug: False
+dataset: "candid_ptx_dataset"
+fold: 0
+model: "mynetwork" #change to "unet" or "contextualnet" or "cpam" or "lvit"
+dataset_type: "image-text" #chnage to "image" for models that do not use text data
+
+#basic hyperparameters
+num_epochs: 100
+warmup_epochs: 5
+weight_decay: 0.0001
+learning_rate: 0.0001
+momentum: 0.9
+dropout: 0.1
+img_size: 224
+batch_size: 8
+num_workers: 8
+
+#model and run related
+loss: "bce_dice"
+alpha: 0.3
+metric: "dice_metric"
+optimizer: "AdamW"
+scheduler: "LinearWarmupCosineAnnealingLR"
+transform: True
+in_channels: 1
+out_channels: 1
+bilinear: False
+input_size: 256
+bilinear: False
+word_len: 77
+base_lr: 0.0001
+num_head: 8
+t5_path: '/scratch/loki/t5_large'
+base_channel: 64
+
+#wandb and checkpointing related
+wandb_project: "PTX-TextSeg"
+wandb_run_name: "run001"
+save_top_k: 5
