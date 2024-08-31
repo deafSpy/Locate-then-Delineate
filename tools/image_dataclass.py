@@ -11,7 +11,7 @@ from tools.image_preprocessing import *
 from loguru import logger
 
 class ImageDataClass(data.Dataset):
-    def __init__(self, files, mode="val", img_size=256, transform=False):
+    def __init__(self, config, files, mode="val", img_size=256, transform=False):
         super(ImageDataClass, self).__init__()
         self.img_files = files
         self.is_transform = transform
@@ -19,6 +19,7 @@ class ImageDataClass(data.Dataset):
         self.transforms = image_transforms(self.img_size)
         self.mode = mode
         self.resize = transforms.Resize((img_size, img_size))
+        self.config = config
         
     def __getitem__(self, index):
         img_raw = pydicom.dcmread(self.img_files[index]).pixel_array

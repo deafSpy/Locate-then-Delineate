@@ -10,7 +10,7 @@ class MyNetwork(torch.nn.Module):
     def __init__(self, config):
         super(MyNetwork, self).__init__()
 
-        state_dict = torch.load(config["pretrained_unet"])["state_dict"]
+        state_dict = torch.load(config["pretrained_unet"], weights_only=True)
         state_dict_copy = OrderedDict()
 
         for key in state_dict.keys():

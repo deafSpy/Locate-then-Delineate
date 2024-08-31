@@ -1,0 +1,36 @@
+2024-08-25 14:29:45,109 INFO    MainThread:20775 [wandb_setup.py:_flush():76] Current SDK version is 0.17.6
+2024-08-25 14:29:45,109 INFO    MainThread:20775 [wandb_setup.py:_flush():76] Configure stats pid to 20775
+2024-08-25 14:29:45,109 INFO    MainThread:20775 [wandb_setup.py:_flush():76] Loading settings from /home2/shreyu/.config/wandb/settings
+2024-08-25 14:29:45,109 INFO    MainThread:20775 [wandb_setup.py:_flush():76] Loading settings from /home2/shreyu/honors/text_segmentation/Locate-then-Delineate/wandb/settings
+2024-08-25 14:29:45,109 INFO    MainThread:20775 [wandb_setup.py:_flush():76] Loading settings from environment variables: {}
+2024-08-25 14:29:45,109 INFO    MainThread:20775 [wandb_setup.py:_flush():76] Applying setup settings: {'_disable_service': False}
+2024-08-25 14:29:45,110 INFO    MainThread:20775 [wandb_setup.py:_flush():76] Inferring run settings from compute environment: {'program_relpath': 'main.py', 'program_abspath': '/home2/shreyu/honors/text_segmentation/Locate-then-Delineate/main.py', 'program': 'main.py'}
+2024-08-25 14:29:45,110 INFO    MainThread:20775 [wandb_setup.py:_flush():76] Applying login settings: {}
+2024-08-25 14:29:45,110 INFO    MainThread:20775 [wandb_init.py:_log_setup():521] Logging user logs to ./wandb/run-20240825_142945-r23kqyy8/logs/debug.log
+2024-08-25 14:29:45,110 INFO    MainThread:20775 [wandb_init.py:_log_setup():522] Logging internal logs to ./wandb/run-20240825_142945-r23kqyy8/logs/debug-internal.log
+2024-08-25 14:29:45,110 INFO    MainThread:20775 [wandb_init.py:init():559] calling init triggers
+2024-08-25 14:29:45,110 INFO    MainThread:20775 [wandb_init.py:init():567] wandb.init called with sweep_config: {}
+config: {}
+2024-08-25 14:29:45,111 INFO    MainThread:20775 [wandb_init.py:init():609] starting backend
+2024-08-25 14:29:45,111 INFO    MainThread:20775 [wandb_init.py:init():613] setting up manager
+2024-08-25 14:29:45,115 INFO    MainThread:20775 [backend.py:_multiprocessing_setup():107] multiprocessing start_methods=fork,spawn,forkserver, using: spawn
+2024-08-25 14:29:45,124 INFO    MainThread:20775 [wandb_init.py:init():621] backend started and connected
+2024-08-25 14:29:45,135 INFO    MainThread:20775 [wandb_init.py:init():716] updated telemetry
+2024-08-25 14:29:45,261 INFO    MainThread:20775 [wandb_init.py:init():749] communicating run to backend with 90.0 second timeout
+2024-08-25 14:29:46,404 INFO    MainThread:20775 [wandb_run.py:_on_init():2438] communicating current version
+2024-08-25 14:29:46,756 INFO    MainThread:20775 [wandb_run.py:_on_init():2447] got version response upgrade_message: "wandb version 0.17.7 is available!  To upgrade, please run:\n $ pip install wandb --upgrade"
+
+2024-08-25 14:29:46,757 INFO    MainThread:20775 [wandb_init.py:init():800] starting run threads in backend
+2024-08-25 14:29:47,373 INFO    MainThread:20775 [wandb_run.py:_console_start():2416] atexit reg
+2024-08-25 14:29:47,375 INFO    MainThread:20775 [wandb_run.py:_redirect():2258] redirect: wrap_raw
+2024-08-25 14:29:47,376 INFO    MainThread:20775 [wandb_run.py:_redirect():2323] Wrapping output streams.
+2024-08-25 14:29:47,376 INFO    MainThread:20775 [wandb_run.py:_redirect():2348] Redirects installed.
+2024-08-25 14:29:47,428 INFO    MainThread:20775 [wandb_init.py:init():843] run started, returning control to user process
+2024-08-25 14:30:24,973 INFO    MainThread:20775 [wandb_run.py:_config_callback():1385] config_cb None None {'config/config_name': 'config.yaml', 'config/final_dir_name': 'output_dir', 'config/debug': False, 'config/dataset': 'candid_ptx_dataset', 'config/fold': 0, 'config/model': 'unet', 'config/dataset_type': 'image-text', 'config/num_epochs': 100, 'config/warmup_epochs': 1, 'config/weight_decay': 0.0001, 'config/learning_rate': 0.0001, 'config/momentum': 0.9, 'config/dropout': 0.1, 'config/img_size': 224, 'config/batch_size': 8, 'config/num_workers': 8, 'config/loss': 'bce_dice', 'config/alpha': 0.3, 'config/metric': 'dice_metric', 'config/optimizer': 'AdamW', 'config/scheduler': 'LinearWarmupCosineAnnealingLR', 'config/transform': True, 'config/in_channels': 1, 'config/out_channels': 1, 'config/bilinear': False, 'config/input_size': 256, 'config/word_len': 77, 'config/base_lr': 0.0001, 'config/num_head': 8, 'config/t5_path': '/ssd_scratch/cvit/shreyu/datasets/ptx-textseg-dataset/t5_large/', 'config/base_channel': 64, 'config/model_type': 'bert', 'config/wandb_project': 'PTX-TextSeg', 'config/wandb_run_name': 'run003', 'config/save_top_k': 5}
+2024-08-25 23:59:27,166 INFO    MainThread:20775 [wandb_run.py:_finish():2110] finishing run deafspy_work/PTX-TextSeg/r23kqyy8
+2024-08-25 23:59:27,167 INFO    MainThread:20775 [wandb_run.py:_atexit_cleanup():2377] got exitcode: 0
+2024-08-25 23:59:27,173 INFO    MainThread:20775 [wandb_run.py:_restore():2355] restore
+2024-08-25 23:59:27,174 INFO    MainThread:20775 [wandb_run.py:_restore():2361] restore done
+2024-08-25 23:59:37,540 INFO    MainThread:20775 [wandb_run.py:_footer_history_summary_info():4035] rendering history
+2024-08-25 23:59:37,543 INFO    MainThread:20775 [wandb_run.py:_footer_history_summary_info():4067] rendering summary
+2024-08-25 23:59:37,569 INFO    MainThread:20775 [wandb_run.py:_footer_sync_info():3994] logging synced files

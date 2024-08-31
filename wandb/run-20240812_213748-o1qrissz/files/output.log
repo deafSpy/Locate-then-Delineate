@@ -1,0 +1,22 @@
+/home2/shreyu/.pyenv/versions/ltd/lib/python3.7/site-packages/albumentations/augmentations/transforms.py:1286: FutureWarning: RandomContrast has been deprecated. Please use RandomBrightnessContrast
+  FutureWarning,
+/home2/shreyu/.pyenv/versions/ltd/lib/python3.7/site-packages/albumentations/augmentations/transforms.py:1260: FutureWarning: This class has been deprecated. Please use RandomBrightnessContrast
+  FutureWarning,
+Traceback (most recent call last):
+  File "main.py", line 80, in <module>
+    word_len=config["word_len"]
+  File "/home2/shreyu/honors/text_segmentation/Locate-then-Delineate/tools/create_dataset.py", line 35, in create_dataset
+    train_data = ImageTextDataClass(config, train_files, mode="train", img_size=img_size, transform=transform,max_len=word_len)
+  File "/home2/shreyu/honors/text_segmentation/Locate-then-Delineate/tools/image_text_dataclass.py", line 27, in __init__
+    self.tokenizer = AutoTokenizer.from_pretrained(config["t5_path"])
+  File "/home2/shreyu/.pyenv/versions/ltd/lib/python3.7/site-packages/transformers/models/auto/tokenization_auto.py", line 643, in from_pretrained
+    tokenizer_config = get_tokenizer_config(pretrained_model_name_or_path, **kwargs)
+  File "/home2/shreyu/.pyenv/versions/ltd/lib/python3.7/site-packages/transformers/models/auto/tokenization_auto.py", line 500, in get_tokenizer_config
+    _commit_hash=commit_hash,
+  File "/home2/shreyu/.pyenv/versions/ltd/lib/python3.7/site-packages/transformers/utils/hub.py", line 429, in cached_file
+    local_files_only=local_files_only,
+  File "/home2/shreyu/.pyenv/versions/ltd/lib/python3.7/site-packages/huggingface_hub/utils/_validators.py", line 110, in _inner_fn
+    validate_repo_id(arg_value)
+  File "/home2/shreyu/.pyenv/versions/ltd/lib/python3.7/site-packages/huggingface_hub/utils/_validators.py", line 159, in validate_repo_id
+    "Repo id must be in the form 'repo_name' or 'namespace/repo_name':"
+huggingface_hub.utils._validators.HFValidationError: Repo id must be in the form 'repo_name' or 'namespace/repo_name': '/ssd_scratch/cvit/shreyu/datasets/ptx-textseg-dataset/t5_large'. Use `repo_type` argument if needed.

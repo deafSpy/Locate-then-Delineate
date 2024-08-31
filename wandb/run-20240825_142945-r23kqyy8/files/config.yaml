@@ -1,0 +1,208 @@
+wandb_version: 1
+
+_wandb:
+  desc: null
+  value:
+    python_version: 3.7.17
+    cli_version: 0.17.6
+    framework: huggingface
+    huggingface_version: 4.30.2
+    is_jupyter_run: false
+    is_kaggle_kernel: false
+    start_time: 1724576385
+    t:
+      1:
+      - 1
+      - 5
+      - 9
+      - 11
+      - 41
+      - 48
+      - 49
+      - 53
+      - 55
+      - 63
+      - 80
+      - 103
+      2:
+      - 1
+      - 5
+      - 9
+      - 11
+      - 41
+      - 48
+      - 49
+      - 53
+      - 55
+      - 63
+      - 80
+      - 103
+      3:
+      - 2
+      - 7
+      - 13
+      - 23
+      - 66
+      4: 3.7.17
+      5: 0.17.6
+      6: 4.30.2
+      8:
+      - 5
+      13: linux-x86_64
+    m:
+    - 1: trainer/global_step
+      6:
+      - 3
+    - 1: examples._type
+      5: 1
+      6:
+      - 1
+    - 1: examples.width
+      5: 1
+      6:
+      - 1
+    - 1: examples.height
+      5: 1
+      6:
+      - 1
+    - 1: examples.format
+      5: 1
+      6:
+      - 1
+    - 1: examples.count
+      5: 1
+      6:
+      - 1
+    - 1: examples.filenames
+      5: 1
+      6:
+      - 1
+    - 1: examples.captions
+      5: 1
+      6:
+      - 1
+    - 1: global_step
+      5: 1
+      6:
+      - 1
+    - 1: val/metric
+      5: 1
+      6:
+      - 1
+    - 1: val/loss
+      5: 1
+      6:
+      - 1
+    - 1: epoch
+      5: 1
+      6:
+      - 1
+    - 1: train/loss
+      5: 1
+      6:
+      - 1
+config/config_name:
+  desc: null
+  value: config.yaml
+config/final_dir_name:
+  desc: null
+  value: output_dir
+config/debug:
+  desc: null
+  value: false
+config/dataset:
+  desc: null
+  value: candid_ptx_dataset
+config/fold:
+  desc: null
+  value: 0
+config/model:
+  desc: null
+  value: unet
+config/dataset_type:
+  desc: null
+  value: image-text
+config/num_epochs:
+  desc: null
+  value: 100
+config/warmup_epochs:
+  desc: null
+  value: 1
+config/weight_decay:
+  desc: null
+  value: 0.0001
+config/learning_rate:
+  desc: null
+  value: 0.0001
+config/momentum:
+  desc: null
+  value: 0.9
+config/dropout:
+  desc: null
+  value: 0.1
+config/img_size:
+  desc: null
+  value: 224
+config/batch_size:
+  desc: null
+  value: 8
+config/num_workers:
+  desc: null
+  value: 8
+config/loss:
+  desc: null
+  value: bce_dice
+config/alpha:
+  desc: null
+  value: 0.3
+config/metric:
+  desc: null
+  value: dice_metric
+config/optimizer:
+  desc: null
+  value: AdamW
+config/scheduler:
+  desc: null
+  value: LinearWarmupCosineAnnealingLR
+config/transform:
+  desc: null
+  value: true
+config/in_channels:
+  desc: null
+  value: 1
+config/out_channels:
+  desc: null
+  value: 1
+config/bilinear:
+  desc: null
+  value: false
+config/input_size:
+  desc: null
+  value: 256
+config/word_len:
+  desc: null
+  value: 77
+config/base_lr:
+  desc: null
+  value: 0.0001
+config/num_head:
+  desc: null
+  value: 8
+config/t5_path:
+  desc: null
+  value: /ssd_scratch/cvit/shreyu/datasets/ptx-textseg-dataset/t5_large/
+config/base_channel:
+  desc: null
+  value: 64
+config/model_type:
+  desc: null
+  value: bert
+config/wandb_project:
+  desc: null
+  value: PTX-TextSeg
+config/wandb_run_name:
+  desc: null
+  value: run003
+config/save_top_k:
+  desc: null
+  value: 5

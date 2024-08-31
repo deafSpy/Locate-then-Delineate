@@ -18,9 +18,12 @@ from tools.image_dataclass import *
 from tools.image_text_dataclass import *
 from engine.engine import *
 
+import gc
+gc.set_threshold(0)
+
 pl.seed_everything(seed=42)
 
-SCRATCH_FOLDER_PATH = "/scratch/loki"
+SCRATCH_FOLDER_PATH = "/ssd_scratch/cvit/shreyu/datasets/ptx-textseg-dataset/"
 CONFIG_FOLDER_PATH = "./configs/"
 
 class LightningModel(pl.LightningModule):
@@ -105,6 +108,7 @@ if __name__ == "__main__":
     os.makedirs(os.path.join(SCRATCH_FOLDER_PATH, config['final_dir_name']), exist_ok=True)
     
     checkpoint_path = os.path.join(SCRATCH_FOLDER_PATH, config['final_dir_name'], "checkpoints")
+    print("checkpoint_path", checkpoint_path)
     
     shutil.copy(os.path.join(CONFIG_FOLDER_PATH, config['config_name']), os.path.join(SCRATCH_FOLDER_PATH, config['final_dir_name'], "config.yaml"))
     
@@ -129,7 +133,7 @@ if __name__ == "__main__":
         save_top_k=1,
         mode="max")
 
-    max_epochs = 2
+    max_epochs = 101
 
     callbacks = [overall_checkpoint_callback, val_loss_checkpoint_callback, val_acc_checkpoint_callback, ImagePredictionLogger(samples)]
     if(config["debug"] == False):
@@ -148,6 +152,8 @@ if __name__ == "__main__":
 
     logger.info("Beginning to train")
     trainer.fit(model=model, train_dataloaders=train_dataloader, val_dataloaders=val_dataloader)
+    
+    torch.save(model.state_dict(), os.path.join(SCRATCH_FOLDER_PATH, config['final_dir_name'], "final_model.pth"))
 
     logger.info("Testing model")
     testing_model = LightningModel(config).load_from_checkpoint(f"{checkpoint_path}/best_val_loss.ckpt")

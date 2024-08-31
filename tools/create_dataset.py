@@ -8,16 +8,23 @@ from loguru import logger
 from sklearn.model_selection import train_test_split
 import cv2 as cv
 
-SCRATCH_FOLDER_PATH = "/scratch/loki"
+import gc
+gc.set_threshold(0)
+
+SCRATCH_FOLDER_PATH = "/ssd_scratch/cvit/shreyu/datasets/ptx-textseg-dataset/"
 
 def create_dataset(config, fold, img_size, transform, num_workers, batch_size, dataset_type="image", word_len=150):
-    df_folds = pd.read_csv(os.path.join(os.getcwd(), "tools", "folds.csv"))
+    df_folds = pd.read_csv(os.path.join(os.getcwd(), "tools", config["folds_file"]))
     train_files = df_folds[f"fold_{fold}_train"].tolist()
     test_files = df_folds[f"fold_{fold}_test"].tolist()
     val_files = df_folds[f"fold_{fold}_val"].tolist()
     test_files = np.array(test_files)
     train_files = np.array(train_files)
     val_files = np.array(val_files)
+    
+    # print(os.path.join(os.getcwd(), "tools", "folds.csv"))
+    # exit(1)
+    # print("cd debug", df_folds, train_files, val_files)
 
     test_files = test_files[np.where(test_files != '-1')]
     test_files = [os.path.join(SCRATCH_FOLDER_PATH, config['dataset'], "dicom_files", test_file) for test_file in test_files]
@@ -25,19 +32,22 @@ def create_dataset(config, fold, img_size, transform, num_workers, batch_size, d
     train_files = [os.path.join(SCRATCH_FOLDER_PATH, config['dataset'], "dicom_files", train_file) for train_file in train_files]
     val_files = val_files[np.where(val_files != '-1')]
     val_files = [os.path.join(SCRATCH_FOLDER_PATH, config['dataset'], "dicom_files", val_file) for val_file in val_files]
+
     
     if(dataset_type == "image"):
-        train_data = ImageDataClass(config,train_files, mode="train", img_size=img_size, transform=transform)
+        train_data = ImageDataClass(config, train_files, mode="train", img_size=img_size, transform=transform)
         val_data = ImageDataClass(config, val_files, img_size=img_size, transform=transform)
         test_data = ImageDataClass(config, test_files, img_size=img_size, transform=transform)
         logger.info("Datasets prepared")
     elif(dataset_type == "image-text"):
-        train_data = ImageTextDataClass(config, train_files, mode="train", img_size=img_size, transform=transform,max_len=word_len)
-        val_data = ImageTextDataClass(config, val_files, img_size=img_size, transform=transform,max_len=word_len)
-        test_data = ImageTextDataClass(config, test_files, img_size=img_size, transform=transform,max_len=word_len)
+        # print("train")
+        train_data = ImageTextDataClass(config, train_files, mode="train", img_size=img_size, transform=transform, max_len=word_len)
+        # print("val")
+        val_data = ImageTextDataClass(config, val_files, mode="val", img_size=img_size, transform=transform, max_len=word_len)
+        # print("ttest")
+        test_data = ImageTextDataClass(config, test_files, mode="val", img_size=img_size, transform=transform, max_len=word_len)
         logger.info("Datasets prepared")
 
-    
     train_dataloader = DataLoader(
         train_data,
         batch_size=batch_size,
@@ -67,3 +77,4 @@ def create_dataset(config, fold, img_size, transform, num_workers, batch_size, d
     logger.info("Dataloaders created")
 
     return train_dataloader, val_dataloader, test_dataloader
+

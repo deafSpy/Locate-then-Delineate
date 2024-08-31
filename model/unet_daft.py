@@ -49,6 +49,8 @@ class UnetDAFT(torch.nn.Module):
         self.daft_block8 = DAFTBlock(128, None, bottleneck_dim=64)
         '''
 
+        self.daft_block = DAFTBlock(1024, None, bottleneck_dim=512)
+        
         self.daft_block = DAFTBlock(1024, None, bottleneck_dim=512, ndim_non_img=config['quad_num'])
 
     def forward(self, img, text_embed):
@@ -66,7 +68,7 @@ class UnetDAFT(torch.nn.Module):
         x5 = self.down4(x4)
 
         #decode1 = self.up1(self.daft_block5(x5,ids))
-        decode1 = self.up1(self.daft_block(x5,tabular_data))
+        decode1 = self.up1(self.daft_block(x5, text_embed))
         x = concatenate_layers(decode1, x4)
         x = self.up_conv1(x)
 

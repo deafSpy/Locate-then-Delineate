@@ -20,7 +20,7 @@ from engine.engine import *
 
 pl.seed_everything(seed=42)
 
-SCRATCH_FOLDER_PATH = "/scratch/loki"
+SCRATCH_FOLDER_PATH = "/ssd_scratch/cvit/shreyu/datasets/ptx-textseg-dataset/"
 CONFIG_FOLDER_PATH = "./configs/"
 
 class LightningModel(pl.LightningModule):

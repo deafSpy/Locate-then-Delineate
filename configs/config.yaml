@@ -1,15 +1,23 @@
 #run related
 config_name: "config.yaml"
-final_dir_name: "output_dir"
+final_dir_name: "output_cnet-fold3"
 debug: False
 dataset: "candid_ptx_dataset"
-fold: 0
-model: "mynetwork" #change to "unet" or "contextualnet" or "cpam" or "lvit"
+fold: 2
+model: "contextualnet" #"unet", "contextualnet", "cpam", "lvit", "mynetwork"
 dataset_type: "image-text" #chnage to "image" for models that do not use text data
+# dataset_type: "image" #chnage to "image" for models that do not use text data
+pretrained_unet: "/ssd_scratch/cvit/shreyu/datasets/ptx-textseg-dataset/output_cnet_f1/final_model.pth"
+folds_file: "folds.csv"
+
+#wandb and checkpointing related
+wandb_project: "PTX-TextSeg"
+wandb_run_name: "mynet_cnet-fold3"
+save_top_k: 5
 
 #basic hyperparameters
-num_epochs: 100
-warmup_epochs: 5
+num_epochs: 100 # 100
+warmup_epochs: 5 # 5
 weight_decay: 0.0001
 learning_rate: 0.0001
 momentum: 0.9
@@ -17,6 +25,7 @@ dropout: 0.1
 img_size: 224
 batch_size: 8
 num_workers: 8
+quad_num: 4
 
 #model and run related
 loss: "bce_dice"
@@ -33,10 +42,8 @@ bilinear: False
 word_len: 77
 base_lr: 0.0001
 num_head: 8
-t5_path: '/scratch/loki/t5_large'
+t5_path: "/ssd_scratch/cvit/shreyu/datasets/ptx-textseg-dataset/t5_large/"
 base_channel: 64
+model_type: "bert"
 
-#wandb and checkpointing related
-wandb_project: "PTX-TextSeg"
-wandb_run_name: "run001"
-save_top_k: 5
+

@@ -4,11 +4,11 @@ import csv
 import cv2
 import pandas as pd
 
-img_list = os.listdir('/scratch/loki/candid_ptx_dataset/dicom_files')
+img_list = os.listdir('/scratch/shreyu/ptx-textseg-dataset/candid_ptx_dataset/dicom_files')
 neg, small, medium, large = [], [], [], []
 
 for img_path in img_list:
-    mask = cv2.imread(os.path.join('/scratch/loki/candid_ptx_dataset/','masks',img_path+'.jpg'),0)
+    mask = cv2.imread(os.path.join('/scratch/shreyu/ptx-textseg-dataset/candid_ptx_dataset/','masks',img_path+'.jpg'),0)
     mask = cv2.resize(mask, (224, 224))
     mask = np.array(mask/255, dtype='uint8')
     sum_val = np.sum(mask)

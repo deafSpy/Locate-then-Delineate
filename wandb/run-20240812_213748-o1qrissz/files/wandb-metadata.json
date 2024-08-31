@@ -1,0 +1,250 @@
+{
+    "os": "Linux-4.15.0-213-generic-x86_64-with-debian-buster-sid",
+    "python": "3.7.17",
+    "heartbeatAt": "2024-08-12T16:07:49.835565",
+    "startedAt": "2024-08-12T16:07:48.341918",
+    "docker": null,
+    "cuda": null,
+    "args": [
+        "configs/config.yaml"
+    ],
+    "state": "running",
+    "program": "main.py",
+    "codePathLocal": "main.py",
+    "codePath": "main.py",
+    "git": {
+        "remote": "https://github.com/deafSpy/Locate-then-Delineate.git",
+        "commit": "d1d20a8049ba80845a9578e0373e43f3d302571a"
+    },
+    "email": null,
+    "root": "/home2/shreyu/honors/text_segmentation/Locate-then-Delineate",
+    "host": "gnode060",
+    "username": "shreyu",
+    "executable": "/home2/shreyu/.pyenv/versions/ltd/bin/python3",
+    "cpu_count": 20,
+    "cpu_count_logical": 40,
+    "cpu_freq": {
+        "current": 1665.7042250000002,
+        "min": 1200.0,
+        "max": 3400.0
+    },
+    "cpu_freq_per_core": [
+        {
+            "current": 1200.454,
+            "min": 1200.0,
+            "max": 3400.0
+        },
+        {
+            "current": 1203.181,
+            "min": 1200.0,
+            "max": 3400.0
+        },
+        {
+            "current": 1203.394,
+            "min": 1200.0,
+            "max": 3400.0
+        },
+        {
+            "current": 1914.655,
+            "min": 1200.0,
+            "max": 3400.0
+        },
+        {
+            "current": 1200.792,
+            "min": 1200.0,
+            "max": 3400.0
+        },
+        {
+            "current": 2405.868,
+            "min": 1200.0,
+            "max": 3400.0
+        },
+        {
+            "current": 3266.174,
+            "min": 1200.0,
+            "max": 3400.0
+        },
+        {
+            "current": 1202.876,
+            "min": 1200.0,
+            "max": 3400.0
+        },
+        {
+            "current": 1203.078,
+            "min": 1200.0,
+            "max": 3400.0
+        },
+        {
+            "current": 1203.219,
+            "min": 1200.0,
+            "max": 3400.0
+        },
+        {
+            "current": 1204.337,
+            "min": 1200.0,
+            "max": 3400.0
+        },
+        {
+            "current": 3269.184,
+            "min": 1200.0,
+            "max": 3400.0
+        },
+        {
+            "current": 1202.058,
+            "min": 1200.0,
+            "max": 3400.0
+        },
+        {
+            "current": 1292.729,
+            "min": 1200.0,
+            "max": 3400.0
+        },
+        {
+            "current": 2309.943,
+            "min": 1200.0,
+            "max": 3400.0
+        },
+        {
+            "current": 2901.397,
+            "min": 1200.0,
+            "max": 3400.0
+        },
+        {
+            "current": 1202.958,
+            "min": 1200.0,
+            "max": 3400.0
+        },
+        {
+            "current": 1200.367,
+            "min": 1200.0,
+            "max": 3400.0
+        },
+        {
+            "current": 1204.412,
+            "min": 1200.0,
+            "max": 3400.0
+        },
+        {
+            "current": 1200.103,
+            "min": 1200.0,
+            "max": 3400.0
+        },
+        {
+            "current": 1200.613,
+            "min": 1200.0,
+            "max": 3400.0
+        },
+        {
+            "current": 1201.513,
+            "min": 1200.0,
+            "max": 3400.0
+        },
+        {
+            "current": 1200.902,
+            "min": 1200.0,
+            "max": 3400.0
+        },
+        {
+            "current": 1965.698,
+            "min": 1200.0,
+            "max": 3400.0
+        },
+        {
+            "current": 1200.03,
+            "min": 1200.0,
+            "max": 3400.0
+        },
+        {
+            "current": 2258.842,
+            "min": 1200.0,
+            "max": 3400.0
+        },
+        {
+            "current": 2843.609,
+            "min": 1200.0,
+            "max": 3400.0
+        },
+        {
+            "current": 1200.28,
+            "min": 1200.0,
+            "max": 3400.0
+        },
+        {
+            "current": 1200.704,
+            "min": 1200.0,
+            "max": 3400.0
+        },
+        {
+            "current": 1200.956,
+            "min": 1200.0,
+            "max": 3400.0
+        },
+        {
+            "current": 1200.418,
+            "min": 1200.0,
+            "max": 3400.0
+        },
+        {
+            "current": 3213.919,
+            "min": 1200.0,
+            "max": 3400.0
+        },
+        {
+            "current": 1201.193,
+            "min": 1200.0,
+            "max": 3400.0
+        },
+        {
+            "current": 1287.782,
+            "min": 1200.0,
+            "max": 3400.0
+        },
+        {
+            "current": 2279.921,
+            "min": 1200.0,
+            "max": 3400.0
+        },
+        {
+            "current": 3141.504,
+            "min": 1200.0,
+            "max": 3400.0
+        },
+        {
+            "current": 1201.027,
+            "min": 1200.0,
+            "max": 3400.0
+        },
+        {
+            "current": 1202.289,
+            "min": 1200.0,
+            "max": 3400.0
+        },
+        {
+            "current": 1200.283,
+            "min": 1200.0,
+            "max": 3400.0
+        },
+        {
+            "current": 1200.455,
+            "min": 1200.0,
+            "max": 3400.0
+        }
+    ],
+    "disk": {
+        "/": {
+            "total": 219.00129318237305,
+            "used": 88.5146255493164
+        }
+    },
+    "gpu": "NVIDIA GeForce RTX 2080 Ti",
+    "gpu_count": 1,
+    "gpu_devices": [
+        {
+            "name": "NVIDIA GeForce RTX 2080 Ti",
+            "memory_total": 11811160064
+        }
+    ],
+    "memory": {
+        "total": 125.78239059448242
+    }
+}

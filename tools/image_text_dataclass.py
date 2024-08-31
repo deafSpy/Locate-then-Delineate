@@ -13,6 +13,10 @@ from pathlib import Path
 from transformers import AutoTokenizer
 from bert_embedding import BertEmbedding
 import pandas as pd
+from os.path import dirname
+
+import gc
+gc.set_threshold(0)
 
 class ImageTextDataClass(data.Dataset):
     def __init__(self, config, files, max_len=150, mode="val", img_size=256, transform=False):
@@ -25,13 +29,19 @@ class ImageTextDataClass(data.Dataset):
         self.resize = transforms.Resize((img_size, img_size))
         self.max_len = max_len
         self.tokenizer = AutoTokenizer.from_pretrained(config["t5_path"])
+        # print("HIHIHI")
         self.bert_embedding = BertEmbedding()
+        # print("BERTBERTBERBT")
+        # if (self.bert_embedding):
+        #     print("bert done", self.bert_embedding)
         # self.df_quad = None
         self.config = config
         # if('stage1' in config):
         #     self.df = pd.read_csv(os.path.join('qinfo', config['stage1']+'.csv'))
 
     def __getitem__(self, index):
+        
+        # print("GETITEM")
         img_raw = pydicom.dcmread(self.img_files[index]).pixel_array
         img = normalise(img_raw)
         mask = cv.cvtColor(cv.imread(self.img_files[index].replace("dicom_files", "masks")+".jpg"), cv.COLOR_BGR2GRAY)
@@ -95,7 +105,7 @@ class ImageTextDataClass(data.Dataset):
             return image, mask, text, os.path.basename(self.img_files[index])
         
         #loading precomputed text embeddings to save training time
-        t5_embeddings = torch.load('/scratch/loki/candid_ptx_dataset/encoded_embeddings/'+os.path.basename(self.img_files[index])+'.pt')
+        t5_embeddings = torch.load('/ssd_scratch/cvit/shreyu/datasets/ptx-textseg-dataset/candid_ptx_dataset/encoded_embeddings/'+os.path.basename(self.img_files[index])+'.pt')
         
         # if('stage1' in self.config):
         #     row = self.df.loc[self.df['name'] == os.path.basename(self.img_files[index])]
@@ -110,4 +120,5 @@ class ImageTextDataClass(data.Dataset):
         return image, mask, t5_embeddings, os.path.basename(self.img_files[index])
         
     def __len__(self):
+        # print("GOTLENGTH")
         return len(self.img_files)
