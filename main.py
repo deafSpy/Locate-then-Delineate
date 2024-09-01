@@ -23,7 +23,6 @@ gc.set_threshold(0)
 
 pl.seed_everything(seed=42)
 
-SCRATCH_FOLDER_PATH = "/ssd_scratch/cvit/shreyu/datasets/ptx-textseg-dataset/"
 CONFIG_FOLDER_PATH = "./configs/"
 
 class LightningModel(pl.LightningModule):
@@ -84,7 +83,7 @@ if __name__ == "__main__":
     )
 
     #sample dataloader
-    sample_files = glob.glob(os.path.join(SCRATCH_FOLDER_PATH, "sample/dicom_files/*"))
+    sample_files = glob.glob(os.path.join(config['dataset_path'], "sample/dicom_files/*"))
     if(config["dataset_type"] == "image"):
         sample_data = ImageDataClass(config, sample_files, mode="val", img_size=config["img_size"], transform=False)
     else:
@@ -104,13 +103,13 @@ if __name__ == "__main__":
     
     model = LightningModel(config)
     
-    shutil.rmtree(os.path.join(SCRATCH_FOLDER_PATH, config['final_dir_name']), ignore_errors=True)
-    os.makedirs(os.path.join(SCRATCH_FOLDER_PATH, config['final_dir_name']), exist_ok=True)
+    shutil.rmtree(os.path.join(config['dataset_path'], config['final_dir_name']), ignore_errors=True)
+    os.makedirs(os.path.join(config['dataset_path'], config['final_dir_name']), exist_ok=True)
     
-    checkpoint_path = os.path.join(SCRATCH_FOLDER_PATH, config['final_dir_name'], "checkpoints")
+    checkpoint_path = os.path.join(config['dataset_path'], config['final_dir_name'], "checkpoints")
     print("checkpoint_path", checkpoint_path)
     
-    shutil.copy(os.path.join(CONFIG_FOLDER_PATH, config['config_name']), os.path.join(SCRATCH_FOLDER_PATH, config['final_dir_name'], "config.yaml"))
+    shutil.copy(os.path.join(CONFIG_FOLDER_PATH, config['config_name']), os.path.join(config['dataset_path'], config['final_dir_name'], "config.yaml"))
     
     overall_checkpoint_callback = ModelCheckpoint(
         dirpath=checkpoint_path,
@@ -153,9 +152,9 @@ if __name__ == "__main__":
     logger.info("Beginning to train")
     trainer.fit(model=model, train_dataloaders=train_dataloader, val_dataloaders=val_dataloader)
     
-    torch.save(model.state_dict(), os.path.join(SCRATCH_FOLDER_PATH, config['final_dir_name'], "final_model.pth"))
+    torch.save(model.state_dict(), os.path.join(config['dataset_path'], config['final_dir_name'], "final_model.pth"))
 
     logger.info("Testing model")
     testing_model = LightningModel(config).load_from_checkpoint(f"{checkpoint_path}/best_val_loss.ckpt")
-    test(testing_model, test_dataloader, get_metric_fn(config), os.path.join(SCRATCH_FOLDER_PATH, config['final_dir_name']), save_outputs=True)
+    test(testing_model, test_dataloader, get_metric_fn(config), os.path.join(config['dataset_path'], config['final_dir_name']), save_outputs=True)
     wandb.finish()

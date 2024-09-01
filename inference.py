@@ -20,7 +20,6 @@ from engine.engine import *
 
 pl.seed_everything(seed=42)
 
-SCRATCH_FOLDER_PATH = "/ssd_scratch/cvit/shreyu/datasets/ptx-textseg-dataset/"
 CONFIG_FOLDER_PATH = "./configs/"
 
 class LightningModel(pl.LightningModule):
@@ -78,11 +77,11 @@ if __name__ == "__main__":
     
     model = LightningModel(config)
 
-    os.makedirs(os.path.join(SCRATCH_FOLDER_PATH, config['final_dir_name']), exist_ok=True)
+    os.makedirs(os.path.join(config['dataset_path'], config['final_dir_name']), exist_ok=True)
     
-    checkpoint_path = os.path.join(SCRATCH_FOLDER_PATH, config['final_dir_name'], "checkpoints")
-    shutil.copy(os.path.join(CONFIG_FOLDER_PATH, config['config_name']), os.path.join(SCRATCH_FOLDER_PATH, config['final_dir_name'], "config.yaml"))
+    checkpoint_path = os.path.join(config['dataset_path'], config['final_dir_name'], "checkpoints")
+    shutil.copy(os.path.join(CONFIG_FOLDER_PATH, config['config_name']), os.path.join(config['dataset_path'], config['final_dir_name'], "config.yaml"))
 
     logger.info("Testing model")
     testing_model = LightningModel(config).load_from_checkpoint(f"{checkpoint_path}/best_val_loss.ckpt")
-    test(testing_model, test_dataloader, get_metric_fn(config), os.path.join(SCRATCH_FOLDER_PATH, config['final_dir_name']), save_outputs=True)
+    test(testing_model, test_dataloader, get_metric_fn(config), os.path.join(config['dataset_path'], config['final_dir_name']), save_outputs=True)

@@ -11,8 +11,6 @@ import cv2 as cv
 import gc
 gc.set_threshold(0)
 
-SCRATCH_FOLDER_PATH = "/ssd_scratch/cvit/shreyu/datasets/ptx-textseg-dataset/"
-
 def create_dataset(config, fold, img_size, transform, num_workers, batch_size, dataset_type="image", word_len=150):
     df_folds = pd.read_csv(os.path.join(os.getcwd(), "tools", config["folds_file"]))
     train_files = df_folds[f"fold_{fold}_train"].tolist()
@@ -27,11 +25,11 @@ def create_dataset(config, fold, img_size, transform, num_workers, batch_size, d
     # print("cd debug", df_folds, train_files, val_files)
 
     test_files = test_files[np.where(test_files != '-1')]
-    test_files = [os.path.join(SCRATCH_FOLDER_PATH, config['dataset'], "dicom_files", test_file) for test_file in test_files]
+    test_files = [os.path.join(config['dataset_path'], config['dataset'], "dicom_files", test_file) for test_file in test_files]
     train_files = train_files[np.where(train_files != '-1')]
-    train_files = [os.path.join(SCRATCH_FOLDER_PATH, config['dataset'], "dicom_files", train_file) for train_file in train_files]
+    train_files = [os.path.join(config['dataset_path'], config['dataset'], "dicom_files", train_file) for train_file in train_files]
     val_files = val_files[np.where(val_files != '-1')]
-    val_files = [os.path.join(SCRATCH_FOLDER_PATH, config['dataset'], "dicom_files", val_file) for val_file in val_files]
+    val_files = [os.path.join(config['dataset_path'], config['dataset'], "dicom_files", val_file) for val_file in val_files]
 
     
     if(dataset_type == "image"):

@@ -1,7 +1,8 @@
 #run related
 config_name: "config.yaml"
-final_dir_name: "output_cnet-fold3"
+final_dir_name: "output_cnet-fold0"
 debug: False
+dataset_path: "/ssd_scratch/cvit/shreyu/datasets/ptx-textseg-dataset/"
 dataset: "candid_ptx_dataset"
 fold: 2
 model: "contextualnet" #"unet", "contextualnet", "cpam", "lvit", "mynetwork"
@@ -12,7 +13,7 @@ folds_file: "folds.csv"
 
 #wandb and checkpointing related
 wandb_project: "PTX-TextSeg"
-wandb_run_name: "mynet_cnet-fold3"
+wandb_run_name: "mynet_cnet-fold0"
 save_top_k: 5
 
 #basic hyperparameters
