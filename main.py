@@ -103,7 +103,6 @@ if __name__ == "__main__":
     
     model = LightningModel(config)
     
-    
     shutil.rmtree(os.path.join(config['dataset_path'], config['final_dir_name']), ignore_errors=True)
     os.makedirs(os.path.join(config['dataset_path'], config['final_dir_name']), exist_ok=True)
     
