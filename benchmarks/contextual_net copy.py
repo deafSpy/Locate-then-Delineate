@@ -23,9 +23,6 @@ class CONTEXTUALNET(torch.nn.Module):
         self.n_classes = n_classes
         self.bilinear = bilinear
         factor = 2 if bilinear else 1
-        max_layer = 768 if (config["embedding"] == "bert") else 1024
-        # max_layer = 768 if (config["embedding"] == "bert" and config["model"] != "contextualnet") else 1024
-        # max_layer = 1024
 
         self.inc = DoubleConv(n_channels, 64)
         self.down1 = Down(64, 128)
@@ -48,13 +45,13 @@ class CONTEXTUALNET(torch.nn.Module):
 
         self.outc = OutConv(64, n_classes)
 
-        self.lang_proj1 = nn.Linear(max_layer, 512)
+        self.lang_proj1 = nn.Linear(1024, 512)
         self.lang_attn1 = LangCrossAtt(emb_dim=512)
-        self.lang_proj2 = nn.Linear(max_layer, 256)
+        self.lang_proj2 = nn.Linear(1024, 256)
         self.lang_attn2 = LangCrossAtt(emb_dim=256)
-        self.lang_proj3 = nn.Linear(max_layer, 128)
+        self.lang_proj3 = nn.Linear(1024, 128)
         self.lang_attn3 = LangCrossAtt(emb_dim=128)
-        self.lang_proj4 = nn.Linear(max_layer, 64)
+        self.lang_proj4 = nn.Linear(1024, 64)
         self.lang_attn4 = LangCrossAtt(emb_dim=64)
 
     def forward(self, img, text_embed):
@@ -70,9 +67,9 @@ class CONTEXTUALNET(torch.nn.Module):
         pooled_sentence = encoder_output.last_hidden_state
         '''
 
-        # print(f"text_embed shape before squeeze: {text_embed.shape}")
+        print(f"text_embed shape before squeeze: {text_embed.shape}")
         lang_rep = torch.squeeze(text_embed, 1).float()
-        # print(f"lang_rep shape after squeeze: {lang_rep.shape}")
+        print(f"lang_rep shape after squeeze: {lang_rep.shape}")
         x1 = self.inc(img)
         x2 = self.down1(x1)
         x3 = self.down2(x2)

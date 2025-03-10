@@ -74,14 +74,15 @@ if __name__ == "__main__":
             dataset_type=config["dataset_type"],
             word_len=config["word_len"]
     )
-    
+
+    print(config)
     model = LightningModel(config)
 
-    os.makedirs(os.path.join(config['dataset_path'], config['final_dir_name']), exist_ok=True)
+    os.makedirs(os.path.join(config['inference_path'], config["dataset"], "output", config['final_dir_name']), exist_ok=True)
     
-    checkpoint_path = os.path.join(config['dataset_path'], config['final_dir_name'], "checkpoints")
-    shutil.copy(os.path.join(CONFIG_FOLDER_PATH, config['config_name']), os.path.join(config['dataset_path'], config['final_dir_name'], "config.yaml"))
+    checkpoint_path = os.path.join(config['dataset_path'], config["dataset"], "output", config['final_dir_name'], "checkpoints")
+    shutil.copy(os.path.join(CONFIG_FOLDER_PATH, config['config_name']), os.path.join(config['inference_path'],  config["dataset"], "output", config['final_dir_name'], "config.yaml"))
 
     logger.info("Testing model")
     testing_model = LightningModel(config).load_from_checkpoint(f"{checkpoint_path}/best_val_loss.ckpt")
-    test(testing_model, test_dataloader, get_metric_fn(config), os.path.join(config['dataset_path'], config['final_dir_name']), save_outputs=True)
+    test(testing_model, test_dataloader, config, get_metric_fn(config), os.path.join(config['inference_path'], config["dataset"], "output", config['final_dir_name']), save_outputs=True)

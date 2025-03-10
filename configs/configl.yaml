@@ -1,34 +1,37 @@
 #run related
-config_name: "config.yaml"
-final_dir_name: "qata_test"
+config_name: "configl.yaml"
+final_dir_name: "lesion_proposed_t5"
 debug: False
 # dataset_path: "/ssd_scratch/cvit/shreyu/datasets/ct_lesions/" # frames, masks, texts
 dataset_path: "/ssd_scratch/cvit/shreyu/datasets/" # Images, Ground-Truths
-dataset: "qata" # "qata", "ct_lesions"
+dataset: "ct_lesions" # "qata", "ct_lesions"
 fold: 0
-model: "unet" #"unet", "contextualnet", "cpam", "lvit", "mynetwork"
+model: "mynetwork" #"unet", "contextualnet", "cpam", "lvit", "mynetwork"
 dataset_type: "image-text" #chnage to "image" for models that do not use text data
-embedding: "t5" # bert
+embedding: "t5" # bert, t5
 # dataset_type: "image" #chnage to "image" for models that do not use text data
-pretrained_unet: "qata/output/qata_cnet3/final_model.pth"
+# pretrained_unet: "/ssd_scratch/cvit/shreyu/datasets/ptx-textseg-dataset/output_cnet_f1/final_model.pth"
+pretrained_unet: "ct_lesions/output/lesion_cnet_t5/final_model.pth"
 folds_file: "folds.csv"
 text_path: "text.csv"
 test: False
 
+
+
 #wandb and checkpointing related
-wandb_project: "qata"
-wandb_run_name: "qata-test"
+wandb_project: "mosmed"
+wandb_run_name: "lesion-proposed-t5"
 save_top_k: 5
 
 #basic hyperparameters
-num_epochs: 5 # 100
+num_epochs: 100 # 100
 warmup_epochs: 5 # 5
 weight_decay: 0.0001
 learning_rate: 0.0001
 momentum: 0.9
 dropout: 0.1
 img_size: 224
-batch_size: 1
+batch_size: 8
 num_workers: 8
 quad_num: 4
 

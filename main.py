@@ -21,6 +21,12 @@ from engine.engine import *
 import gc
 gc.set_threshold(0)
 
+np.random.seed(seed=42) 
+torch.manual_seed(seed=42) 
+torch.cuda.manual_seed(seed=42) 
+torch.cuda.manual_seed_all(seed=42) 
+torch.backends.cudnn.deterministic = True 
+torch.backends.cudnn.benchmark = False 
 pl.seed_everything(seed=42)
 
 CONFIG_FOLDER_PATH = "./configs/"
@@ -60,12 +66,13 @@ if __name__ == "__main__":
     gpus = torch.cuda.device_count()
     config_path = sys.argv[1]
     config = load_config(config_path)
+    print(config)
     if(config["debug"]):
         config["wandb_run_name"] = "**DEBUG** " + config["wandb_run_name"]
 
     # logging
     logger.info(f"Number of GPUs: {gpus}")
-    logger.info(f"Dataset: {config['dataset']}, fold: {config['fold']}")
+    logger.info(f"Dataset: {config['dataset']}")
     logger.info(f"Model: {config['model']}, loss: {config['loss']}, metric: {config['metric']}")
     logger.info(f"DEBUG: {config['debug']}")
 
@@ -73,7 +80,7 @@ if __name__ == "__main__":
 
     train_dataloader, val_dataloader, test_dataloader = create_dataset(
                                     config=config,
-                                    fold=config["fold"],
+                                    fold=config["fold"], # unused
                                     img_size=config["img_size"],
                                     transform=config["transform"],
                                     num_workers=config["num_workers"],
@@ -82,20 +89,6 @@ if __name__ == "__main__":
                                     word_len=config["word_len"]
     )
 
-    #sample dataloader
-    sample_files = glob.glob(os.path.join(config['dataset_path'], "sample/dicom_files/*"))
-    if(config["dataset_type"] == "image"):
-        sample_data = ImageDataClass(config, sample_files, mode="val", img_size=config["img_size"], transform=False)
-    else:
-        sample_data = ImageTextDataClass(config, sample_files, mode="val", img_size=config["img_size"], transform=False, max_len=config["word_len"])
-    sample_dataloader = DataLoader(
-        sample_data,
-        batch_size=8,
-        shuffle=True,
-        num_workers=0,
-        pin_memory=True,
-    )
-    samples = next(iter(sample_dataloader))
     
     LightningModel.training_step = training_step
     LightningModel.validation_step = validation_step
@@ -103,13 +96,13 @@ if __name__ == "__main__":
     
     model = LightningModel(config)
     
-    shutil.rmtree(os.path.join(config['dataset_path'], config['final_dir_name']), ignore_errors=True)
-    os.makedirs(os.path.join(config['dataset_path'], config['final_dir_name']), exist_ok=True)
+    shutil.rmtree(os.path.join(config['dataset_path'], config["dataset"], "output", config['final_dir_name']), ignore_errors=True)
+    os.makedirs(os.path.join(config['dataset_path'], config["dataset"], "output", config['final_dir_name']), exist_ok=True)
     
-    checkpoint_path = os.path.join(config['dataset_path'], config['final_dir_name'], "checkpoints")
+    checkpoint_path = os.path.join(config['dataset_path'], config["dataset"], "output", config['final_dir_name'], "checkpoints")
     print("checkpoint_path", checkpoint_path)
     
-    shutil.copy(os.path.join(CONFIG_FOLDER_PATH, config['config_name']), os.path.join(config['dataset_path'], config['final_dir_name'], "config.yaml"))
+    shutil.copy(os.path.join(CONFIG_FOLDER_PATH, config['config_name']), os.path.join(config['dataset_path'], config["dataset"], "output", config['final_dir_name'], "config.yaml"))
     
     overall_checkpoint_callback = ModelCheckpoint(
         dirpath=checkpoint_path,
@@ -134,11 +127,13 @@ if __name__ == "__main__":
 
     max_epochs = 101
 
-    callbacks = [overall_checkpoint_callback, val_loss_checkpoint_callback, val_acc_checkpoint_callback, ImagePredictionLogger(samples)]
+    callbacks = [overall_checkpoint_callback, val_loss_checkpoint_callback, val_acc_checkpoint_callback]
     if(config["debug"] == False):
         max_epochs = config["num_epochs"]
 
     logger.info(f'gpus: {gpus}')
+    # print("HIHIHIHI", any(p.requires_grad for p in model.parameters()))
+    # exit(0)
 
     trainer = pl.Trainer(
         devices=gpus, 
@@ -146,15 +141,17 @@ if __name__ == "__main__":
         strategy = DDPStrategy(find_unused_parameters=True),
         logger=wandb_logger, 
         callbacks=callbacks, 
-        max_epochs=max_epochs
+        max_epochs=max_epochs,
+        deterministic=True
     )
-
-    logger.info("Beginning to train")
-    trainer.fit(model=model, train_dataloaders=train_dataloader, val_dataloaders=val_dataloader)
     
-    torch.save(model.state_dict(), os.path.join(config['dataset_path'], config['final_dir_name'], "final_model.pth"))
+    logger.info("Beginning to train")
+    trainer.fit(model=model, train_dataloaders=train_dataloader, val_dataloaders=val_dataloader
+                )
+    
+    torch.save(model.state_dict(), os.path.join(config['dataset_path'],  config["dataset"], "output", config['final_dir_name'], "final_model.pth"))
 
     logger.info("Testing model")
     testing_model = LightningModel(config).load_from_checkpoint(f"{checkpoint_path}/best_val_loss.ckpt")
-    test(testing_model, test_dataloader, get_metric_fn(config), os.path.join(config['dataset_path'], config['final_dir_name']), save_outputs=True)
+    test(testing_model, test_dataloader, config, get_metric_fn(config), os.path.join(config['dataset_path'], config["dataset"], "output", config['final_dir_name']), save_outputs=True)
     wandb.finish()

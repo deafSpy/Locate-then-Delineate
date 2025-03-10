@@ -62,7 +62,7 @@ def validation_step(self, batch, batch_idx):
     self.log("val/loss", val_loss, sync_dist=True, on_step=False, on_epoch=True)
     return val_loss
 
-def test(model, test_dataloader, metric_fn, output_dir, save_outputs=True):
+def test(model, test_dataloader, config, metric_fn, output_dir, save_outputs=True):
     rows = []
     model.cuda()
     model.eval()
@@ -100,12 +100,15 @@ def test(model, test_dataloader, metric_fn, output_dir, save_outputs=True):
         test_metric = metric_fn(outputs, y)
 
         ptx_size = None
+        
+        bound1 = 2211 if config["dataset"] == "qata" else 122 # 375
+        bound2 = 8947 if config["dataset"] == "qata" else 766 # 1250
 
         if (y.sum() == 0):
             ptx_size = "negative"
-        elif(y.sum() < 375):
+        elif(y.sum() < bound1):
             ptx_size = "small"
-        elif(y.sum() > 1250):
+        elif(y.sum() < bound2):
             ptx_size = "medium"
         else:
             ptx_size = "large"
@@ -128,24 +131,27 @@ def test(model, test_dataloader, metric_fn, output_dir, save_outputs=True):
         #print(outputs.shape)
         preds = outputs.squeeze().cpu().detach()
         preds = preds.numpy()
+        # print(preds.shape)
         
-        preds = np.sum(preds, 0)/ preds.shape[0]
+        preds2 = np.sum(preds, 0)/ preds.shape[0]
+        # print(preds.shape)
         
         preds = preds + 0
         preds *= 255
+        # print(preds.shape)
+        # exit(0)
 
-        '''
-        preds2 = outputs2.squeeze().cpu().detach()
-        preds2 = preds2.numpy()
+        # preds2 = outputs2.squeeze().cpu().detach()
+        # preds2 = preds2.numpy()
         
-        preds2 = np.sum(preds2, 0)/ preds2.shape[0]
+        # preds2 = np.sum(preds2, 0)/ preds2.shape[0]
         
-        preds2 = preds2 + 0
-        preds2 *= 255
+        # preds2 = preds2 + 0
+        # preds2 *= 255
 
-        preds1 = cv2.resize(preds1, (256, 256))
-        preds2 = cv2.resize(preds2, (256, 256))
-        '''
+        # preds1 = cv2.resize(preds1, (256, 256))
+        # preds2 = cv2.resize(preds2, (256, 256))
+        
         preds = np.array(preds, dtype='uint8')
         
         if(y.sum() == 0 and preds.sum() == 0):
@@ -157,16 +163,19 @@ def test(model, test_dataloader, metric_fn, output_dir, save_outputs=True):
         else:
             tp = tp + 1
         
+        # print(preds)
         if(save_outputs):
-            cv2.imwrite(f"{output_dir}/outputs/{name}.png", preds)
-            #cv2.imwrite(f"{output_dir}/outputs2/{name}.png", preds2)
+            # print("hi")
+            # print("Saving")
+            cv2.imwrite(f"{output_dir}/outputs1/{name}.png", preds)
+            # cv2.imwrite(f"{output_dir}/outputs2/{name}.png", preds2)
         
         # insights
         if(y.sum() == 0):
             negatives.append(test_metric.item())
-        elif(y.sum() < 375):
+        elif(y.sum() < bound1):
             small.append(test_metric.item())
-        elif(y.sum() < 1250):
+        elif(y.sum() < bound2):
             medium.append(test_metric.item())
         else:
             large.append(test_metric.item())
@@ -199,3 +208,129 @@ def test(model, test_dataloader, metric_fn, output_dir, save_outputs=True):
         f.write(insights)
     df = pd.DataFrame(rows)
     df.to_csv(f"{output_dir}/eval_scores.csv") 
+
+def test2(model, test_dataloader, config, metric_fn):
+    output = []
+    rows = []
+    negatives = []
+    small = []
+    large = []
+    medium = []
+    dices = []
+    tp, fp, tn, fn = 0, 0, 0, 0
+
+    for batch in tqdm(test_dataloader):
+        if(len(batch) == 3):
+            X, y, name = batch
+            X = X.type(torch.cuda.FloatTensor)
+            y = y.type(torch.cuda.FloatTensor)
+            outputs = model(X)
+        else:
+            X, y, text_embed, name = batch
+            print("TEXTEMBED", text_embed.shape)
+            X = X.type(torch.cuda.FloatTensor)
+            y = y.type(torch.cuda.FloatTensor)
+            text_embed = text_embed.type(torch.cuda.FloatTensor)
+            outputs = model(X, text_embed)
+        
+        name = name[0]
+        
+        outputs = outputs > 0.5
+        y = y > 0.5
+    
+        preds = outputs.squeeze().cpu().detach()
+        preds = preds.numpy()
+        preds = preds + 0
+        preds *= 255
+
+        preds = np.array(preds, dtype='uint8')
+        
+        test_metric = metric_fn(outputs, y)
+        
+        ptx_size = None
+        
+        bound1 = 2211 if config["dataset"] == "qata" else 122 # 375
+        bound2 = 8947 if config["dataset"] == "qata" else 766 # 1250
+
+        if (y.sum() == 0):
+            ptx_size = "negative"
+        elif(y.sum() < bound1):
+            ptx_size = "small"
+        elif(y.sum() < bound2):
+            ptx_size = "medium"
+        else:
+            ptx_size = "large"
+
+        row = {
+            "name": name,
+            "ptx_size": ptx_size,
+            "Adjusted rand idx": calc_AdjustedRandIndex(y, outputs),
+            "Dice": dice_metric(y, outputs),
+            "Confusion Matrix":calc_ConfusionMatrix(y, outputs),
+            "Accuracy": calc_Accuracy_Sets(y, outputs),
+            "Hausdorff dist.": calc_AverageHausdorffDistance(y, outputs),
+            "AUC": calc_AUC_trapezoid(y, outputs),
+            "Sensitivity": calc_Sensitivity_Sets(y, outputs),
+            "Precision": calc_Precision_Sets(y, outputs),
+            "Specificity": calc_Specificity_Sets(y, outputs),
+        }
+        rows.append(row)
+        dices.append(dice_metric(y, outputs))
+        
+        if(y.sum() == 0 and preds.sum() == 0):
+            tn = tn + 1
+        elif(y.sum() == 0 and preds.sum() > 0):
+            fp = fp + 1
+        elif(y.sum() > 0 and preds.sum() == 0):
+            fn = fn + 1
+        else:
+            tp = tp + 1
+        
+        # print(preds)
+        # if(save_outputs):
+        #     # print("hi")
+        #     # print("Saving")
+        #     cv2.imwrite(f"{output_dir}/outputs1/{name}.png", preds)
+        #     # cv2.imwrite(f"{output_dir}/outputs2/{name}.png", preds2)
+        
+        # insights
+        if(y.sum() == 0):
+            negatives.append(test_metric.item())
+        elif(y.sum() < bound1):
+            small.append(test_metric.item())
+        elif(y.sum() < bound2):
+            medium.append(test_metric.item())
+        else:
+            large.append(test_metric.item())
+
+        output.append(preds)
+        
+    average_negative_dice = np.mean(negatives)
+    average_small_dice = np.mean(small)
+    average_medium_dice = np.mean(medium)
+    average_large_dice = np.mean(large)
+    
+    dices2 = small + medium + large
+    # print("DEBUG", len(dices), dices[0], np.array(small).shape, np.array(medium).shape, np.array(large).shape, dices2.shape)
+
+    average_positive_dice = (np.sum(small)+np.sum(medium)+np.sum(large)) / (len(small)+len(medium)+len(large))
+    average_med_large_dice = (np.sum(medium)+np.sum(large)) / (len(medium)+len(large))
+    overall_dice = (np.sum(negatives)+np.sum(small)+np.sum(medium)+np.sum(large)) / (len(small)+len(medium)+len(large)+len(negatives))
+    
+    insights= f"""Thresholds for sub categories: (375, 1250)
+    Average Dice: {overall_dice},
+    Average Positives Dice: {average_positive_dice},
+    Average Negatives Dice: {average_negative_dice},
+    Average Small Pneumothorax Dice: {average_small_dice},
+    Average Medium Pneumothorax Dice: {average_medium_dice},
+    Average Large Pneumothorax Dice: {average_large_dice},
+    Average Dice for Medium and Large Pneumothorax: {average_med_large_dice},
+    [TP, FP, TN, FN] : [{tp}, {fp}, {tn}, {fn}],
+    Classication Accuracy : {classification_accuracy},
+    Number of images (s, m, l, n): [{len(small)}, {len(medium)}, {len(large)}, {len(negatives)}],
+    """
+    
+    print(insights)
+    
+        
+    return np.array(output), dices2

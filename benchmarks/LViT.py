@@ -76,7 +76,9 @@ class LViT(nn.Module):
         self.n_channels = n_channels
         self.n_classes = n_classes
         in_channels = config["base_channel"]
+        # text_in_channels = config["text_in_channels"]
         self.inc = ConvBatchNorm(n_channels, in_channels)
+        # print("a", config)
         self.downVit = VisionTransformer(config, vis, img_size=224, channel_num=64, patch_size=16, embed_dim=64)
         self.downVit1 = VisionTransformer(config, vis, img_size=112, channel_num=128, patch_size=8, embed_dim=128)
         self.downVit2 = VisionTransformer(config, vis, img_size=56, channel_num=256, patch_size=4, embed_dim=256)
@@ -104,14 +106,22 @@ class LViT(nn.Module):
         self.pix_module2 = PixLevelModule(128)
         self.pix_module3 = PixLevelModule(256)
         self.pix_module4 = PixLevelModule(512)
-        self.text_module4 = nn.Conv1d(in_channels=768, out_channels=512, kernel_size=3, padding=1)
+        
+        max_layer = 1024 if config["embedding"] != "bert" else 768
+        
+        self.text_module4 = nn.Conv1d(in_channels=max_layer, out_channels=512, kernel_size=3, padding=1)
         self.text_module3 = nn.Conv1d(in_channels=512, out_channels=256, kernel_size=3, padding=1)
         self.text_module2 = nn.Conv1d(in_channels=256, out_channels=128, kernel_size=3, padding=1)
         self.text_module1 = nn.Conv1d(in_channels=128, out_channels=64, kernel_size=3, padding=1)
 
+
     def forward(self, x, text):
         x = x.float()  # x [4,3,224,224]
         x1 = self.inc(x)  # x1 [4, 64, 224, 224]
+        text = torch.squeeze(text)
+        print(text.shape, text)
+        if text.dim() == 2:
+            text = text.unsqueeze(0)
         text4 = self.text_module4(text.transpose(1, 2)).transpose(1, 2) 
         text3 = self.text_module3(text4.transpose(1, 2)).transpose(1, 2)
         text2 = self.text_module2(text3.transpose(1, 2)).transpose(1, 2)
